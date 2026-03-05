@@ -1,0 +1,184 @@
+/* 
+  Aura Mobile App - Premium Design System
+  Focus: Minimalist, Glassmorphism, Smooth Interactions
+*/
+
+:root {
+  /* Color Palette - Elegant Dark/Deep Gradients */
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  --accent-primary: #818cf8; /* Indigo-400 */
+  --accent-secondary: #c084fc; /* Purple-400 */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(12px);
+  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Spacing & Sizing */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --spacing-main: 20px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* Mobile optimization */
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Mobile-First Layout Container */
+.app-container {
+  max-width: 480px; /* Standard mobile width */
+  margin: 0 auto;
+  padding: var(--spacing-main);
+  padding-bottom: 100px; /* Space for dynamic add button */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styles */
+header {
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.brand {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Task List */
+.task-list {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Glassmorphic Task Card */
+.task-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+  box-shadow: var(--card-shadow);
+}
+
+.task-card:active {
+  transform: scale(0.98);
+}
+
+.task-checkbox {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-checkbox.checked {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.task-text {
+  flex: 1;
+  font-size: 1.1rem;
+  transition: color 0.2s ease;
+}
+
+.task-card.completed .task-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Dynamic Add Button (Bottom Navigation Style) */
+.add-container {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 440px;
+}
+
+.input-glass {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.5rem;
+  padding-right: 4rem;
+  color: white;
+  font-family: inherit;
+  font-size: 1.1rem;
+  outline: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.btn-add {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(129, 140, 248, 0.4);
+}
+
+/* Animations (Generic helpers) */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

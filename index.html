@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aura | Minimalist Tracker</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Motion (Vanilla JS Animation Library) -->
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Mobile Web App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="brand">Aura</div>
+            <div class="subtitle">Focus on your goals</div>
+        </header>
+
+        <main id="task-list" class="task-list">
+            <!-- Tasks will be injected here by app.js -->
+        </main>
+
+        <div class="add-container">
+            <input type="text" id="task-input" class="input-glass" placeholder="Nueva tarea..." autocomplete="off">
+            <button id="add-btn" class="btn-add">
+                <i data-lucide="plus"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
