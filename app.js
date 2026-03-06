@@ -19,11 +19,14 @@ tasks = tasks.map(t => ({
   completedAt: t.completedAt || null
 }));
 
-// Format time (HH:MM)
-function formatTime(isoString) {
+// Format date and time (DD/MM HH:MM)
+function formatDateTime(isoString) {
   if (!isoString) return '';
   const date = new Date(isoString);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return `${day}/${month} ${time}`;
 }
 
 // Render Tasks
@@ -58,12 +61,12 @@ function createTaskCard(task, isArchived) {
   card.className = `task-card fade-in ${task.completed ? 'completed' : ''}`;
 
   card.innerHTML = `
-    <div class="timestamp start">${formatTime(task.createdAt)}</div>
+    <div class="timestamp start">${formatDateTime(task.createdAt)}</div>
     <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="event.stopPropagation(); toggleTask(${task.id})">
       ${task.completed ? '<i data-lucide="check" style="width: 12px; color: white"></i>' : ''}
     </div>
     <div class="task-text" onclick="toggleTask(${task.id})">${task.text}</div>
-    <div class="timestamp end">${task.completedAt ? formatTime(task.completedAt) : ''}</div>
+    <div class="timestamp end">${task.completedAt ? formatDateTime(task.completedAt) : ''}</div>
     <div class="task-actions">
       ${!isArchived ? `
         <button class="btn-icon" onclick="event.stopPropagation(); archiveTask(${task.id})">

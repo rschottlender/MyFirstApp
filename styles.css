@@ -130,10 +130,11 @@ header {
 }
 
 .timestamp {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--text-muted);
   font-family: monospace;
   white-space: nowrap;
+  line-height: 1;
 }
 
 .timestamp.start {
