@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,15 +19,29 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
 </head>
+
 <body>
     <div class="app-container">
         <header>
             <div class="brand">Aura</div>
             <div class="subtitle">Focus on your goals</div>
+            <button id="toggle-history" class="view-toggle">
+                <i data-lucide="archive"></i>
+                <span>Ver Historial</span>
+            </button>
         </header>
 
-        <main id="task-list" class="task-list">
-            <!-- Tasks will be injected here by app.js -->
+        <main id="main-view">
+            <div id="task-list" class="task-list">
+                <!-- Tasks will be injected here by app.js -->
+            </div>
+        </main>
+
+        <main id="history-view" class="hidden">
+            <div class="history-title">Tareas Pasadas</div>
+            <div id="history-list" class="task-list">
+                <!-- Archived tasks will be injected here -->
+            </div>
         </main>
 
         <div class="add-container">
@@ -39,4 +54,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>
