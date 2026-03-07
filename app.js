@@ -8,7 +8,7 @@ const toggleHistoryBtn = document.getElementById('toggle-history');
 const mainView = document.getElementById('main-view');
 const historyView = document.getElementById('history-view');
 const exportBtn = document.getElementById('export-btn');
-const copyBtn = document.getElementById('copy-btn');
+const shareBtn = document.getElementById('share-btn');
 
 let isHistoryVisible = false;
 
@@ -178,22 +178,63 @@ function exportToCSV() {
     }, 100);
   } catch (error) {
     alert('Error al exportar: ' + error.message);
+    shareCSV();
+  }
+}
+
+function shareCSV() {
+  try {
+    if (tasks.length === 0) {
+      alert('No hay tareas para compartir.');
+      return;
+    }
+
+    const csvContent = generateCSVContent();
+
+    // 1. Opcion ideal: Compartir Archivo
+    if (navigator.canShare) {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const file = new File([blob], 'aura_tasks.csv', { type: 'text/csv' });
+
+      if (navigator.canShare({ files: [file] })) {
+        navigator.share({
+          title: 'Mis Tareas de Aura',
+          files: [file]
+        }).catch(err => {
+          if (err.name !== 'AbortError') fallbackShareText(csvContent);
+        });
+        return;
+      }
+    }
+
+    // 2. Opcion secundaria: Compartir Texto Nativo
+    fallbackShareText(csvContent);
+
+  } catch (error) {
+    alert('Error general al compartir: ' + error.message);
+    copyToClipboard();
+  }
+}
+
+function fallbackShareText(csvContent) {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Mis Tareas de Aura (CSV)',
+      text: csvContent
+    }).catch(err => {
+      if (err.name !== 'AbortError') copyToClipboard();
+    });
+  } else {
     copyToClipboard();
   }
 }
 
 function copyToClipboard() {
   try {
-    if (tasks.length === 0) {
-      alert('No hay tareas para copiar.');
-      return;
-    }
-
     const csvContent = generateCSVContent();
-
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(csvContent).then(() => {
-        alert('Copiado al portapapeles. Ya puedes pegarlo en Excel o Sheets.');
+        alert('Datos copiados al portapapeles. Pégalos en tu destino.');
       }).catch(err => {
         fallbackCopyTextToClipboard(csvContent);
       });
@@ -216,7 +257,7 @@ function fallbackCopyTextToClipboard(text) {
     document.execCommand('copy');
     alert('Copiado al portapapeles (método alternativo).');
   } catch (err) {
-    alert('No se pudo copiar ni con método alternativo.');
+    alert('Tu navegador bloquea la copia automática. Por favor, intenta usar Web Share o hazlo en PC.');
   }
   document.body.removeChild(textArea);
 }
@@ -228,7 +269,7 @@ taskInput.addEventListener('keypress', (e) => {
 });
 toggleHistoryBtn.addEventListener('click', toggleHistoryView);
 exportBtn.addEventListener('click', exportToCSV);
-copyBtn.addEventListener('click', copyToClipboard);
+shareBtn.addEventListener('click', shareCSV);
 
 // Initial Render
 document.addEventListener('DOMContentLoaded', () => {
