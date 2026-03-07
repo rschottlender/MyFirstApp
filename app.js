@@ -143,14 +143,7 @@ function saveTasks() {
   localStorage.setItem('aura_tasks', JSON.stringify(tasks));
 }
 
-// Export to CSV
-function exportToCSV() {
-  if (tasks.length === 0) {
-    alert('No hay tareas para exportar.');
-    return;
-  }
-
-  // Configuración para máxima compatibilidad con Google Sheets
+function generateCSVContent() {
   const headers = ['Tarea', 'Estatus', 'Fecha Creacion', 'Fecha Completada'];
   const rows = tasks.map(t => [
     `"${t.text.replace(/"/g, '""')}"`,
@@ -158,20 +151,74 @@ function exportToCSV() {
     t.createdAt ? `"${new Date(t.createdAt).toLocaleString().replace(',', '')}"` : '',
     t.completedAt ? `"${new Date(t.completedAt).toLocaleString().replace(',', '')}"` : ''
   ]);
+  return "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+}
 
-  // Usamos coma (,) como separador por petición del usuario
-  // Y añadimos el BOM (Byte Order Mark) para que Excel detecte UTF-8 correctamente
-  const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+function exportToCSV() {
+  try {
+    if (tasks.length === 0) {
+      alert('No hay tareas para exportar.');
+      return;
+    }
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", `aura_tasks_${new Date().toISOString().split('T')[0]}.csv`);
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    const csvContent = generateCSVContent();
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `aura_tasks.csv`;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 100);
+  } catch (error) {
+    alert('Error al exportar: ' + error.message);
+    copyToClipboard();
+  }
+}
+
+function copyToClipboard() {
+  try {
+    if (tasks.length === 0) {
+      alert('No hay tareas para copiar.');
+      return;
+    }
+
+    const csvContent = generateCSVContent();
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csvContent).then(() => {
+        alert('Copiado al portapapeles. Ya puedes pegarlo en Excel o Sheets.');
+      }).catch(err => {
+        fallbackCopyTextToClipboard(csvContent);
+      });
+    } else {
+      fallbackCopyTextToClipboard(csvContent);
+    }
+  } catch (error) {
+    alert('No se pudo copiar: ' + error.message);
+  }
+}
+
+function fallbackCopyTextToClipboard(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.position = "fixed";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    alert('Copiado al portapapeles (método alternativo).');
+  } catch (err) {
+    alert('No se pudo copiar ni con método alternativo.');
+  }
+  document.body.removeChild(textArea);
 }
 
 // Event Listeners
@@ -181,6 +228,7 @@ taskInput.addEventListener('keypress', (e) => {
 });
 toggleHistoryBtn.addEventListener('click', toggleHistoryView);
 exportBtn.addEventListener('click', exportToCSV);
+copyBtn.addEventListener('click', copyToClipboard);
 
 // Initial Render
 document.addEventListener('DOMContentLoaded', () => {
