@@ -8,6 +8,7 @@ const toggleHistoryBtn = document.getElementById('toggle-history');
 const mainView = document.getElementById('main-view');
 const historyView = document.getElementById('history-view');
 const exportBtn = document.getElementById('export-btn');
+const copyBtn = document.getElementById('copy-btn');
 
 let isHistoryVisible = false;
 
