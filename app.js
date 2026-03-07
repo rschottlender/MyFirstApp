@@ -7,6 +7,7 @@ const addBtn = document.getElementById('add-btn');
 const toggleHistoryBtn = document.getElementById('toggle-history');
 const mainView = document.getElementById('main-view');
 const historyView = document.getElementById('history-view');
+const exportBtn = document.getElementById('export-btn');
 
 let isHistoryVisible = false;
 
@@ -141,12 +142,44 @@ function saveTasks() {
   localStorage.setItem('aura_tasks', JSON.stringify(tasks));
 }
 
+// Export to CSV
+function exportToCSV() {
+  if (tasks.length === 0) {
+    alert('No hay tareas para exportar.');
+    return;
+  }
+
+  // Configuración para máxima compatibilidad con Google Sheets
+  const headers = ['Tarea', 'Estatus', 'Fecha Creacion', 'Fecha Completada'];
+  const rows = tasks.map(t => [
+    `"${t.text.replace(/"/g, '""')}"`,
+    t.completed ? 'Cerrada' : 'Abierta',
+    t.createdAt ? `"${new Date(t.createdAt).toLocaleString().replace(',', '')}"` : '',
+    t.completedAt ? `"${new Date(t.completedAt).toLocaleString().replace(',', '')}"` : ''
+  ]);
+
+  // Usamos coma (,) como separador por petición del usuario
+  // Y añadimos el BOM (Byte Order Mark) para que Excel detecte UTF-8 correctamente
+  const csvContent = "\uFEFF" + [headers, ...rows].map(e => e.join(",")).join("\n");
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `aura_tasks_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 // Event Listeners
 addBtn.addEventListener('click', addTask);
 taskInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') addTask();
 });
 toggleHistoryBtn.addEventListener('click', toggleHistoryView);
+exportBtn.addEventListener('click', exportToCSV);
 
 // Initial Render
 document.addEventListener('DOMContentLoaded', () => {
